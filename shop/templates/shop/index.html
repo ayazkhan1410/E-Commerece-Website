@@ -89,7 +89,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{product.0.product_name}}</h5>
                   <p class="card-text">{{product.0.product_desc}}</p>
-                  <a href="#" class="btn btn-primary">Add to cart</a>
+                  <button id="pr{{product.0.id}}"class="btn btn-primary cart">Add to cart</button>
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@
                 <div class="card-body">
                   <h5 class="card-title">{{i.product_name}}</h5>
                   <p class="card-text">{{i.product_desc}}</p>
-                  <a href="#" class="btn btn-primary">Add to cart</a>
+                  <button id="pr{{i.id}}"class="btn btn-primary cart">Add to cart</button>
                 </div>
               </div>
             </div>
@@ -126,3 +126,52 @@
 {% endfor %}
 </div>
  {% endblock %}
+
+ {% block js %}
+
+ <script>
+ console.log('Working');
+ if(localStorage.getItem('cart')== null){
+  var cart = {}
+ }
+ else{
+  cart = JSON.parse(localStorage.getItem('cart'));
+ }
+// $('.cart') --> jitni bhi class cart hain
+// click(function() agr uspr koi click krta hain to chala do function
+//  console.log('clicked'); ya wala function
+//  var isStr = this.id.toString(); jo bh add to cart pr click kra to uski id show hy
+//   console.log(isStr); through this code we're printing id of a product on console
+
+$('.cart').click(function(){
+  // When a 'cart' class element is clicked, this code runs.
+  
+  console.log('clicked'); 
+  // Print 'clicked' to the console for debugging purposes.
+  
+  var idstr= this.id.toString();
+  // Get the ID of the clicked element and convert it to a string.
+  
+  console.log(idstr); 
+  // Print the ID to the console for debugging.
+  
+  if(cart[idstr]!= undefined) {
+    // Check if the ID exists in the 'cart' object.
+    
+    cart[idstr] = cart[idstr]+1;
+    // If it exists, increase the quantity by 1.
+  }
+  else{
+    cart[idstr] = 1;
+    // If it doesn't exist, set the quantity to 1.
+  }
+  
+  console.log(cart); 
+  // Print the updated 'cart' object to the console.
+  
+  localStorage.setItem('cart', JSON.stringify(cart));
+  // Store the updated 'cart' object in local storage.
+});
+
+ </script>
+ {% endblock%}
