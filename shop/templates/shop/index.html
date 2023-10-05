@@ -44,20 +44,6 @@
           height: 400px;
           width: 1000px;
         }
-        .card-img-top{
-          max-width: 100%; /* Ensure the image doesn't exceed its container's width */
-          height: auto; /* Maintain the image's aspect ratio */
-          display: inline-block; /* Remove any default inline styling */
-          margin: 0 auto; 
-        }
-        .card-text{
-          text-align: center;
-        }
-        .card-title{
-          text-align: center;
-        }
-       
-
     {% endblock %}
 {% block body %}
 <!-- {% load static %} -->
@@ -82,19 +68,8 @@
 
       <div class="carousel-inner">
         <div class="carousel-item active">
-            
-            <div class="col-xs-3 col-sm-3 col-md-3">
-              <div class="card" style="width: 18rem;">
-                <img src= '/media/{{product.0.images}}' class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title">{{product.0.product_name}}</h5>
-                  <p class="card-text">{{product.0.product_desc}}</p>
-                  <button id="pr{{product.0.id}}"class="btn btn-primary cart">Add to cart</button>
-                </div>
-              </div>
-            </div>
 
-            {% for i in product|slice:"1:" %}
+            {% for i in product %}
             <div class="col-xs-3 col-sm-3 col-md-3">
               <div class="card" style="width: 18rem;">
                 <img src='/media/{{i.images}} 'class="card-img-top" alt="...">
@@ -105,7 +80,7 @@
                 </div>
               </div>
             </div>
-            {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+            {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
               </div>
               <div class="carousel-item">
             {% endif%}
@@ -151,7 +126,7 @@ $('.cart').click(function(){
   
   var idstr= this.id.toString();
   // Get the ID of the clicked element and convert it to a string.
-  
+
   console.log(idstr); 
   // Print the ID to the console for debugging.
   
