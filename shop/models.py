@@ -13,3 +13,6 @@ class Product(models.Model):
     images = models.ImageField(upload_to='shop/images',default="")
     class Meta:
         ordering=['price']
+        
+    def __str__(self):
+        return self.product_name
