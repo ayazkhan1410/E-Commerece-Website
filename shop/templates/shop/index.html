@@ -70,10 +70,10 @@
           <div class="card align-items-center" style="width: 18rem;">
             <img src='/media/{{i.images}}' class="card-img-top" alt="...">
             <div class="card-body">
-              <h5 class="card-title">{{i.product_name}}</h5>
+              <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
               <p class="card-text">{{i.desc}}</p>
 
-              <span id = "divpr{{i.id}}">
+              <span id = "divpr{{i.id}}" class="divpr">
               <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
               </span>
               <a href="/shop/products/{{i.id}}"><button id="qr{{i.id}}" class="btn btn-primary cart">QuickView</button></a>
@@ -103,61 +103,76 @@
 </div>
  {% endblock %}
 
-{% block js %}
-<script>
-
-// Find out the cart items from a local storage
-if(localStorage.getItem('cart') == null){
-var cart = {};
-}
-else
-{
-cart = JSON.parse(localStorage.getItem('cart'));
-document.getElementById('cart').innerHTML = Object.keys(cart).length;
-updatecart(cart);
-}
-
-
-// if the cart item is clicked. add/increment it
-$('.cart').click(function(){
-var idstr = this.id.toString();
-console.log(idstr);
-if (cart[idstr] !=undefined){
-cart[idstr] = cart[idstr] + 1;
-}
-else
-{
-cart[idstr] = 1;
-}
-updatecart(cart);
-
-localStorage.setItem('cart', JSON.stringify(cart));
-document.getElementById('cart').innerHTML = Object.keys(cart).length;
-});
-
-// add popover to cart
-$('#popcart').popover();
-document.getElementById("popcart").setAttribute('data-content', '<h5>Cart for your items in my shopping cart</h5>');
-
-// update cart function
-function updatecart(cart) {
-  // This is a JavaScript function called "updatecart" that takes one argument, "cart."
-  // The function is designed to update the contents of elements on the page based on the "cart" data.
-
-  console.log(cart);
-  // This line logs the "cart" object to the console for debugging purposes. It prints the content of the "cart" object to the browser's developer console.
-
-  for (var item in cart) {
-    // This is a for-in loop that iterates over the properties (items) in the "cart" object.
-    // It assigns each item to the variable "item" one by one for further processing.
-
-    document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary miuns'>-</button> <span id='val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button> ";
-    // This line updates the innerHTML of an element with an ID composed of "div" + the current "item" value.
-    // It sets the innerHTML of that element to a combination of HTML elements including buttons and spans.
-    // It's essentially creating a set of buttons and a span with the value from the "cart" object.
-
-  }
-}
-
-</script>
-{% endblock %}
+ {% block js %}
+ <script>
+ // Find out the cart items from localStorage
+ if (localStorage.getItem('cart') == null) {
+     var cart = {};
+ } else {
+     cart = JSON.parse(localStorage.getItem('cart'));
+     document.getElementById('cart').innerHTML = Object.keys(cart).length; // Update the cart count in the UI
+     updateCart(cart);
+ }
+ 
+ // If the add to cart button is clicked, add/increment the item
+ $('.cart').click(function() {
+     var idstr = this.id.toString(); // Get the ID of the clicked item
+     if (cart[idstr] != undefined) {
+         cart[idstr] = cart[idstr] + 1; // Increment the quantity of the item in the cart
+     } else {
+         cart[idstr] = 1; // Add the item to the cart with a quantity of 1
+     }
+     updateCart(cart); // Update the cart and UI
+ });
+ 
+ // Add Popover to cart
+ $('#popcart').popover();
+ updatePopover(cart);
+ 
+ // Function to update the popover content with cart items
+ function updatePopover(cart) {
+     console.log('We are inside updatePopover');
+     var popStr = "";
+     popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+     var i = 1;
+     for (var item in cart) {
+         popStr = popStr + "<b>" + i + "</b>. ";
+         popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + '<br>';
+         i = i + 1;
+     }
+     popStr = popStr + "</div>"
+     console.log(popStr);
+     document.getElementById('popcart').setAttribute('data-content', popStr); // Set popover content
+     $('#popcart').popover('show'); // Show the popover
+ }
+ 
+ // Function to update the cart and UI
+ function updateCart(cart) {
+     for (var item in cart) {
+         document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>"; // Update item quantity in the UI
+     }
+     localStorage.setItem('cart', JSON.stringify(cart)); // Store the updated cart in localStorage
+     document.getElementById('cart').innerHTML = Object.keys(cart).length; // Update the cart count in the UI
+     console.log(cart);
+     updatePopover(cart);
+ }
+ 
+ // If minus button is clicked, decrement the item quantity in the cart and UI
+ $('.divpr').on("click", "button.minus", function() {
+     a = this.id.slice(7, );
+     cart['pr' + a] = cart['pr' + a] - 1;
+     cart['pr' + a] = Math.max(0, cart['pr' + a]);
+     document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+     updateCart(cart);
+ });
+ 
+ // If plus button is clicked, increment the item quantity in the cart and UI
+ $('.divpr').on("click", "button.plus", function() {
+     a = this.id.slice(6, );
+     cart['pr' + a] = cart['pr' + a] + 1;
+     document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+     updateCart(cart);
+ });
+ </script>
+ {% endblock %}
+ 
