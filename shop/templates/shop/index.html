@@ -148,11 +148,13 @@
  
  // Function to update the cart and UI
  function updateCart(cart) {
+    var sum = 0
      for (var item in cart) {
+          sum = sum + cart[item];
          document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>"; // Update item quantity in the UI
      }
      localStorage.setItem('cart', JSON.stringify(cart)); // Store the updated cart in localStorage
-     document.getElementById('cart').innerHTML = Object.keys(cart).length; // Update the cart count in the UI
+     document.getElementById('cart').innerHTML = sum; // Update the cart count in the UI
      console.log(cart);
      updatePopover(cart);
  }
